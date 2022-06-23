@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://jquery-3.5.1.min.js"></script>
+    <script>
+      $(document).ready(() => {
+        console.log("working correctly");
+        $("#bi").blur(() => {
+          console.log("blur event occured...");
+          let input = { bi: $("#bi").val() };
+
+          let parafunction = {
+            data: input,
+            url: "http://localhost:900/getdetails",
+            type: "get",
+            datatype: "json",
+            success: function (serverdata) {
+              if (serverdata === true) {
+                $("#bk").val(serverdata.detail.bookname);
+                $("#pb").val(serverdata.detail.price);
+                $("#msg").text("book is available");
+                $("#update").prop("disabled", false);
+              } else {
+                $("#bk").val();
+                $("#pb").val();
+                $("#msg").text("book is not available");
+              }
+            },
+            error: function (servererror) {
+              console.log("error occured" + servererror);
+            },
+          };
+          $.ajax(parafunction);
+        });
+
+        // ========================================
+        $("#update").click(() => {
+          console.log("update button click");
+
+          let input = {
+            bi: $("#bi").val(),
+            bookname: "#bk".val(),
+            price: "#pb",
+          };
+
+          let parafunction = {
+            data: input,
+            url: "http://localhost:900/getupdate",
+            type: "get",
+            datatype: "json",
+            success: function (serverdata) {
+              if (serverdata === true) {
+                $("#msg").text("book price is updated");
+              } else {
+                $("#pb").val();
+                $("#msg").text("book  price is not updated");
+              }
+            },
+            error: function (servererror) {
+              console.log("error occured" + servererror);
+            },
+          };
+          $.ajax(parafunction);
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <input type="number" id="bi" placeholder="bookid" name="bi" />
+
+    <input type="text" id="bk" placeholder="bookname" name="bk" /><br />
+    <input type="number" id="pb" placeholder="book price" name="pb" /><br />
+    <input type="button" name="update" id="update" value="update" />
+    <span id="msg"></span>
+  </body>
+</html>
